@@ -29,6 +29,51 @@ package feathers.extensions.toaster
 		 */
 		public var isCentered:Boolean;
 		
+		private var _delay:Number = 1.0;
+		/**
+		 * The duration to display the toaster message in seconds.
+		 *
+		 * @default 1.0
+		 */
+		public function get delay():Number
+		{
+			return this._delay;
+		}
+		public function set delay(value:Number):void
+		{
+			this._delay = value;
+		}
+		
+		private var _labelOffsetX:Number = 8;
+		/**
+		 * The minimum space, in pixels, between the toaster's left and right edge and the toaster's content.
+		 *
+		 * @default 8
+		 */
+		public function get labelOffsetX():Number
+		{
+			return this._labelOffsetX;
+		}
+		public function set labelOffsetX(value:Number):void
+		{
+			this._labelOffsetX = value;
+		}
+		
+		private var _labelOffsetY:Number = 8;
+		/**
+		 * The minimum space, in pixels, between the toaster's top and bottom edge and the toaster's content.
+		 *
+		 * @default 8
+		 */
+		public function get labelOffsetY():Number
+		{
+			return this._labelOffsetY;
+		}
+		public function set labelOffsetY(value:Number):void
+		{
+			this._labelOffsetY = value;
+		}
+		
 		/**
 		 * The toasters added on the stage.
 		 */
@@ -66,18 +111,21 @@ package feathers.extensions.toaster
 			toasters.push( textToaster );
 			textToaster.text = text;
 			textToaster.alpha = 0.0;
+			textToaster.paddingLeft = textToaster.paddingRight = labelOffsetX;
+			textToaster.paddingTop = textToaster.paddingBottom = labelOffsetY;
 			textToaster.includeInLayout = false;
 			textToaster.topArrowSkin = textToaster.rightArrowSkin = textToaster.bottomArrowSkin = textToaster.leftArrowSkin = null;
 			 
 			if(isCentered) textToaster.validate();
 			stage.addChild(textToaster);
+			textToaster.validate();
 			
 			return textToaster;
 		}
 		
 		private function callout_show(textToaster:TextToaster, start : Number = 0.0, finish : Number = 1.0, transitions : String = Transitions.EASE_OUT) : void
 		{
-			Starling.juggler.tween (textToaster, 1.0,
+			Starling.juggler.tween (textToaster, delay,
 			{
 				alpha : finish,
 				transition : Transitions.EASE_OUT,
