@@ -20,5 +20,37 @@ package feathers.extensions.toaster
         {
 			super();
         }
+		
+		private var _labelOffsetX:Number = 8;
+		/**
+		 * The minimum space, in pixels, between the toaster's left and right edge and the toaster's content.
+		 *
+		 * @default 8
+		 */
+		public function get labelOffsetX():Number
+		{
+			return this._labelOffsetX;
+		}
+		public function set labelOffsetX(value:Number):void
+		{
+			this._labelOffsetX = value;
+			this.paddingLeft = this.paddingRight = labelOffsetX;
+		}
+		
+		private var _labelOffsetY:Number = 8;
+		/**
+		 * The minimum space, in pixels, between the toaster's top and bottom edge and the toaster's content.
+		 *
+		 * @default 8
+		 */
+		public function get labelOffsetY():Number
+		{
+			return this._labelOffsetY;
+		}
+		public function set labelOffsetY(value:Number):void
+		{
+			this._labelOffsetY = value;
+			this.paddingTop = this.paddingBottom = labelOffsetY;
+		}
 	}
 }

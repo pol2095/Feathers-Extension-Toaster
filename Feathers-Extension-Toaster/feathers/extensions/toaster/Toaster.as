@@ -111,8 +111,8 @@ package feathers.extensions.toaster
 			toasters.push( textToaster );
 			textToaster.text = text;
 			textToaster.alpha = 0.0;
-			textToaster.paddingLeft = textToaster.paddingRight = labelOffsetX;
-			textToaster.paddingTop = textToaster.paddingBottom = labelOffsetY;
+			textToaster.labelOffsetX = labelOffsetX;
+			textToaster.labelOffsetY = labelOffsetY;
 			textToaster.includeInLayout = false;
 			textToaster.topArrowSkin = textToaster.rightArrowSkin = textToaster.bottomArrowSkin = textToaster.leftArrowSkin = null;
 			 
