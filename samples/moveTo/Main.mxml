@@ -20,6 +20,11 @@
 			{
 				var textToaster:TextToaster = toaster.open( "some text" );
 				toaster.moveTo( textToaster, 50, 50 );
+				
+				/*var image:Image = new Image( texture );
+				image.scale9Grid = new Rectangle( 20, 20, fileTexture.width - 20 * 2, fileTexture.height - 20 * 2 );
+				textToaster.backgroundSkin = image;
+				textToaster.fontStyles = new starling.text.TextFormat( "Helvetica", 20, 0x3c3c3c );*/
 			}
 		]]>
 	</fx:Script>

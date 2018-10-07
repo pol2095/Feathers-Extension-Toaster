@@ -7,14 +7,11 @@ accordance with the terms of the accompanying license agreement.
 package feathers.extensions.toaster
 {
 	import feathers.core.PopUpManager;
+	import flash.utils.setTimeout;
 	import starling.core.Starling;
 	import starling.events.Event;
 	import starling.animation.Transitions;
 	import starling.display.DisplayObject;
-	
-	import flash.utils.setTimeout;
-	
-	import feathers.controls.LayoutGroup;
 		
 	/**
 	 * A toaster provides simple feedback about an operation in a small popup.
@@ -22,7 +19,7 @@ package feathers.extensions.toaster
 	 * @see http://pol2095.free.fr/Starling-Feathers-Extensions/
 	 * @see feathers.extensions.toaster.TextToaster
 	 */
-	public class Toaster extends LayoutGroup
+	public class Toaster
 	{
 		/**
 		 * Determines if the toaster is centered.
@@ -79,39 +76,74 @@ package feathers.extensions.toaster
 		/**
 		 * The toasters added on the stage.
 		 */
-		public var toasters:Vector.<TextToaster>;
+		protected var toasters:Vector.<TextToaster>;
 		
 		private var _this:Object;
+		
+		private var _anchorBottom:Number = NaN;
+		/**
+		 * The distance between the toaster an the bottom of the stage.
+		 *
+		 * @default NaN
+		 */
+		public function get anchorBottom():Number
+		{
+			return this._anchorBottom;
+		}
+		public function set anchorBottom(value:Number):void
+		{
+			this._anchorBottom = value;
+		}
+		
+		/**
+		 * If taskManager is set to true, every toaster start when the previous toaster is finished.
+		  *
+		 * @default false
+		 */
+		public var taskManager:Boolean;
 		
 		public function Toaster(_this:Object)
         {
 			//this.includeInLayout = false;
 			this._this = _this;
-			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			//this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 		
-		private function onAddedToStage(event:Event):void
+		/*private function onAddedToStage(event:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			_this.stage.addEventListener(Event.RESIZE, onResize);
-        }
+        }*/
 		
 		public function onResize(event:Event = null):void
         {
 			for each(var textToaster:TextToaster in toasters)
 			{
+				var _y:Number;
 				if(textToaster.isCentered)
 				{
 					var _x:Number = (_this.stage.stageWidth - textToaster.width) / 2;
-					//var _y:Number = (_this.stage.stageHeight - textToaster.height) / 2;
-					textToaster.move (_x, textToaster.y);
+					if( ! isNaN( textToaster.anchorBottom ) )
+					{
+						_y = _this.stage.stageHeight - textToaster.anchorBottom - textToaster.height;
+					}
+					else
+					{
+						_y = textToaster.y
+					}
+					textToaster.move(_x, _y);
+				}
+				else if( ! isNaN( textToaster.anchorBottom ) )
+				{
+					_y = _this.stage.stageHeight - textToaster.anchorBottom - textToaster.height;
+					textToaster.move(textToaster.x, _y);
 				}
 			}
 		}
 		
 		private function createCallout( text:String ):TextToaster
 		{
-			var textToaster:TextToaster = new TextToaster();
+			var textToaster:TextToaster = new TextToaster(this);
 			if(!toasters) toasters = new <TextToaster>[];
 			toasters.push( textToaster );
 			textToaster.text = text;
@@ -119,13 +151,14 @@ package feathers.extensions.toaster
 			textToaster.labelOffsetX = labelOffsetX;
 			textToaster.labelOffsetY = labelOffsetY;
 			//textToaster.includeInLayout = false;
+			textToaster.delay = delay;
+			textToaster.isCentered = isCentered;
+			textToaster.anchorBottom = anchorBottom;
 			textToaster.topArrowSkin = textToaster.rightArrowSkin = textToaster.bottomArrowSkin = textToaster.leftArrowSkin = null;
 			 
-			if(isCentered) textToaster.validate();
 			//_this.stage.addChild(textToaster);
+			//textToaster.validate();
 			PopUpManager.addPopUp( textToaster, false, false );
-			textToaster.validate();
-			
 			return textToaster;
 		}
 		
@@ -159,7 +192,8 @@ package feathers.extensions.toaster
 		public function moveTo( textToaster:TextToaster, x:Number, y:Number ):void
 		{
 			var _x:Number = ! textToaster.isCentered ? x : textToaster.x;
-			textToaster.move(_x, y);
+			var _y:Number = ! isNaN( anchorBottom ) ? y : textToaster.y;
+			textToaster.move(_x, _y);
 		}
 		
 		/**
@@ -171,10 +205,21 @@ package feathers.extensions.toaster
 		{
 			if( ! _this.stage.hasEventListener(Event.RESIZE, onResize) ) _this.stage.addEventListener(Event.RESIZE, onResize);
 			var textToaster:TextToaster = createCallout(text);
-			callout_show(textToaster, delay, 0.0, 1.0, Transitions.EASE_OUT);
-			textToaster._this = this;
-			textToaster.isCentered = isCentered;
+			//callout_show(textToaster, delay, 0.0, 1.0, Transitions.EASE_OUT);
+			if( ! taskManager )
+			{
+				launch( textToaster, delay );
+			}
+			else if( toasters.length == 1 )
+			{
+				launch( textToaster, delay );
+			}
 			return textToaster;
+		}
+		
+		private function launch( textToaster:TextToaster, delay:Number ):void
+		{
+			callout_show(textToaster, delay, 0.0, 1.0, Transitions.EASE_OUT);
 		}
 		
 		private function callout_timeout():void
@@ -187,21 +232,33 @@ package feathers.extensions.toaster
 			toasters.splice( toasters.indexOf( textToaster ), 1 );
 			//_this.stage.removeChild(textToaster);
 			PopUpManager.removePopUp( textToaster );
+			textToaster.dispatchEvent( new Event ( Event.COMPLETE ) );
+			if( taskManager && toasters.length != 0 )
+			{
+				var textToaster:TextToaster = toasters[0];
+				launch( textToaster, textToaster.delay );
+			}
+		}
+		
+		/**
+		 * Indicates whether a toaster is currently playing.
+		 */
+		public function get isPlaying():Boolean
+		{
+			return toasters.length != 0 ? true : false;
 		}
 		
 		/**
 		 * @private
 		 */
-		override public function dispose():void
+		public function dispose():void
 		{
 			if(_this.stage)
 			{
 				_this.stage.removeEventListener(Event.RESIZE, onResize);
-				for each(var textToaster:TextToaster in toasters) _this.stage.removeChild(textToaster);
+				//for each(var textToaster:TextToaster in toasters) _this.stage.removeChild(textToaster);
 			}
-			toasters = null;
-			
-			super.dispose();
+			//toasters = null;
 		}
 	}
 }

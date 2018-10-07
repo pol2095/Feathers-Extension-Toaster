@@ -8,6 +8,7 @@ package feathers.extensions.toaster
 {
 	import feathers.controls.TextCallout;
 	import starling.display.DisplayObject;
+	import starling.events.Event;
 	
 	/**
 	 * A TextToaster is a toaster add in <code>Toaster</code> control.
@@ -17,9 +18,18 @@ package feathers.extensions.toaster
 	 */
 	public class TextToaster extends TextCallout
 	{
-		public function TextToaster()
+		public function TextToaster(_this:Toaster)
         {
 			super();
+			this._this = _this;
+			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+        }
+		
+		private function onEnterFrame(event:Event):void
+		{
+			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			this.validate();
+			_this.onResize();
         }
 		
 		private var _labelOffsetX:Number = 8;
@@ -75,5 +85,26 @@ package feathers.extensions.toaster
 		 * @private
 		 */
 		public var _this:Toaster;
+		
+		private var _anchorBottom:Number = NaN;
+		/**
+		 * The distance between the toaster an the bottom of the stage.
+		 *
+		 * @default NaN
+		 */
+		public function get anchorBottom():Number
+		{
+			return this._anchorBottom;
+		}
+		public function set anchorBottom(value:Number):void
+		{
+			this._anchorBottom = value;
+			_this.onResize();
+		}
+		
+		/**
+		 * @private
+		 */
+		public var delay:Number;
 	}
 }
