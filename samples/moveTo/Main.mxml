@@ -6,18 +6,19 @@
 		<f:layout>
 			<f:VerticalLayout/>
 		</f:layout>
-		<components:Toaster id="toaster"/>
+		
 		<f:Button label="toaster" triggered="button_triggeredHandler(event)"/>
 	
 	<fx:Script>
 		<![CDATA[
+			import feathers.extensions.toaster.Toaster;
 			import feathers.extensions.toaster.TextToaster;
+			
+			private var toaster:Toaster = new Toaster(this);
 			
 			private function button_triggeredHandler( event:Event ):void
 			{
-				toaster.open( "some text" );
-				var textToaster:TextToaster = toaster.toasters[ toaster.toasters.length -1 ];
-				textToaster.validate();
+				var textToaster:TextToaster = toaster.open( "some text" );
 				toaster.moveTo( textToaster, 50, 50 );
 			}
 		]]>

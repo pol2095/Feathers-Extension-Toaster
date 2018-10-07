@@ -7,6 +7,7 @@ accordance with the terms of the accompanying license agreement.
 package feathers.extensions.toaster
 {
 	import feathers.controls.TextCallout;
+	import starling.display.DisplayObject;
 	
 	/**
 	 * A TextToaster is a toaster add in <code>Toaster</code> control.
@@ -52,5 +53,27 @@ package feathers.extensions.toaster
 			this._labelOffsetY = value;
 			this.paddingTop = this.paddingBottom = labelOffsetY;
 		}
+		
+		private var _isCentered:Boolean;
+		/**
+		 * Determines if the toaster is centered.
+		 *
+		 * @default false
+		 */
+		public function get isCentered():Boolean
+		{
+			return this._isCentered;
+		}
+		public function set isCentered(value:Boolean):void
+		{
+			if( this._isCentered == value ) return;
+			this._isCentered = value;
+			_this.onResize();
+		}
+		
+		/**
+		 * @private
+		 */
+		public var _this:Toaster;
 	}
 }

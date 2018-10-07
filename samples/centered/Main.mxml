@@ -6,14 +6,21 @@
 		<f:layout>
 			<f:VerticalLayout/>
 		</f:layout>
-		<components:Toaster id="toaster" isCentered="true"/>
+		
 		<f:Button label="toaster" triggered="button_triggeredHandler(event)"/>
 	
 	<fx:Script>
 		<![CDATA[			
+			import feathers.extensions.toaster.Toaster;
+			import feathers.extensions.toaster.TextToaster;
+			
+			private var toaster:Toaster = new Toaster(this);
+			
 			private function button_triggeredHandler( event:Event ):void
 			{
-				toaster.open( "some text" );
+				toaster.isCentered = true;
+				var textToaster:TextToaster = toaster.open( "some text" );
+				toaster.moveTo( textToaster, 0, 150);
 			}
 		]]>
 	</fx:Script>

@@ -6,9 +6,11 @@ accordance with the terms of the accompanying license agreement.
 */
 package feathers.extensions.toaster
 {
+	import feathers.core.PopUpManager;
 	import starling.core.Starling;
 	import starling.events.Event;
 	import starling.animation.Transitions;
+	import starling.display.DisplayObject;
 	
 	import flash.utils.setTimeout;
 	
@@ -75,31 +77,34 @@ package feathers.extensions.toaster
 		}
 		
 		/**
-		 * The toasters added on the stage.
+		 * The toasters added on the _this.stage.
 		 */
 		public var toasters:Vector.<TextToaster>;
 		
-		public function Toaster()
+		private var _this:Object;
+		
+		public function Toaster(_this:Object)
         {
-			this.includeInLayout = false;
+			//this.includeInLayout = false;
+			this._this = _this;
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 		
 		private function onAddedToStage(event:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			stage.addEventListener(Event.RESIZE, onResize);
+			_this.stage.addEventListener(Event.RESIZE, onResize);
         }
 		
-		private function onResize(event:Event = null):void
+		public function onResize(event:Event = null):void
         {
-			if(isCentered)
+			for each(var textToaster:TextToaster in toasters)
 			{
-				for each(var textToaster:TextToaster in toasters)
+				if(textToaster.isCentered)
 				{
-					var _x:Number = (stage.stageWidth - textToaster.width) / 2;
-					var _y:Number = (stage.stageHeight - textToaster.height) / 2;
-					textToaster.move (_x, _y);
+					var _x:Number = (_this.stage.stageWidth - textToaster.width) / 2;
+					//var _y:Number = (_this.stage.stageHeight - textToaster.height) / 2;
+					textToaster.move (_x, textToaster.y);
 				}
 			}
 		}
@@ -113,29 +118,30 @@ package feathers.extensions.toaster
 			textToaster.alpha = 0.0;
 			textToaster.labelOffsetX = labelOffsetX;
 			textToaster.labelOffsetY = labelOffsetY;
-			textToaster.includeInLayout = false;
+			//textToaster.includeInLayout = false;
 			textToaster.topArrowSkin = textToaster.rightArrowSkin = textToaster.bottomArrowSkin = textToaster.leftArrowSkin = null;
 			 
 			if(isCentered) textToaster.validate();
-			stage.addChild(textToaster);
+			//_this.stage.addChild(textToaster);
+			PopUpManager.addPopUp( textToaster, false, false );
 			textToaster.validate();
 			
 			return textToaster;
 		}
 		
-		private function callout_show(textToaster:TextToaster, start : Number = 0.0, finish : Number = 1.0, transitions : String = Transitions.EASE_OUT) : void
+		private function callout_show(textToaster:TextToaster, delay:Number, start : Number = 0.0, finish : Number = 1.0, transitions : String = Transitions.EASE_OUT) : void
 		{
 			Starling.juggler.tween (textToaster, delay,
 			{
 				alpha : finish,
-				transition : Transitions.EASE_OUT,
+				transition : transitions,
 				onStart : function () : void
 				{			 
 					textToaster.alpha = start;
 				},
 				onComplete : function () : void
 				{			 
-					if(finish == 1.0) setTimeout(callout_timeout, 1000, textToaster);
+					if(finish == 1.0) setTimeout(callout_timeout, 1000, textToaster, delay);
 					if(finish == 0.0) callout_close( textToaster );
 				}
 			});
@@ -152,35 +158,35 @@ package feathers.extensions.toaster
 		 */
 		public function moveTo( textToaster:TextToaster, x:Number, y:Number ):void
 		{
-			textToaster.move(x, y);
+			var _x:Number = ! textToaster.isCentered ? x : textToaster.x;
+			textToaster.move(_x, y);
 		}
 		
 		/**
-		 * Add a toaster to the stage.
+		 * Add a toaster to the _this.stage.
 		 *
 		 * @param text Text of the toaster
 		 */
-		public function open( text:String ):void
+		public function open( text:String ):TextToaster
 		{
+			if( ! _this.stage.hasEventListener(Event.RESIZE, onResize) ) _this.stage.addEventListener(Event.RESIZE, onResize);
 			var textToaster:TextToaster = createCallout(text);
-			callout_show(textToaster, 0.0, 1.0, Transitions.EASE_OUT);
-			if(isCentered)
-			{
-				var _x:Number = (stage.stageWidth - textToaster.width) / 2;
-				var _y:Number = (stage.stageHeight - textToaster.height) / 2;
-				textToaster.move (_x, _y);
-			}
+			callout_show(textToaster, delay, 0.0, 1.0, Transitions.EASE_OUT);
+			textToaster._this = this;
+			textToaster.isCentered = isCentered;
+			return textToaster;
 		}
 		
 		private function callout_timeout():void
 		{
-			callout_show(arguments[0], 1.0, 0.0, Transitions.EASE_IN);
+			callout_show(arguments[0], arguments[1], 1.0, 0.0, Transitions.EASE_IN);
 		}
 		
 		private function callout_close( textToaster:TextToaster ):void
 		{
 			toasters.splice( toasters.indexOf( textToaster ), 1 );
-			stage.removeChild(textToaster);
+			//_this.stage.removeChild(textToaster);
+			PopUpManager.removePopUp( textToaster );
 		}
 		
 		/**
@@ -188,10 +194,10 @@ package feathers.extensions.toaster
 		 */
 		override public function dispose():void
 		{
-			if(stage)
+			if(_this.stage)
 			{
-				stage.removeEventListener(Event.RESIZE, onResize);
-				for each(var textToaster:TextToaster in toasters) stage.removeChild(textToaster);
+				_this.stage.removeEventListener(Event.RESIZE, onResize);
+				for each(var textToaster:TextToaster in toasters) _this.stage.removeChild(textToaster);
 			}
 			toasters = null;
 			
