@@ -77,7 +77,7 @@ package feathers.extensions.toaster
 		}
 		
 		/**
-		 * The toasters added on the _this.stage.
+		 * The toasters added on the stage.
 		 */
 		public var toasters:Vector.<TextToaster>;
 		
@@ -163,7 +163,7 @@ package feathers.extensions.toaster
 		}
 		
 		/**
-		 * Add a toaster to the _this.stage.
+		 * Add a toaster to the stage.
 		 *
 		 * @param text Text of the toaster
 		 */
