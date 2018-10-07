@@ -115,10 +115,14 @@ package feathers.extensions.toaster
 			_this.stage.addEventListener(Event.RESIZE, onResize);
         }*/
 		
+		/**
+		 * @private
+		 */
 		public function onResize(event:Event = null):void
         {
 			for each(var textToaster:TextToaster in toasters)
 			{
+				if( ! textToaster.isCreated ) return;
 				var _y:Number;
 				if(textToaster.isCentered)
 				{
@@ -249,7 +253,7 @@ package feathers.extensions.toaster
 		}
 		
 		/**
-		 * @private
+		 * Disposes all resources of the display object. GPU buffers are released, event listeners are removed, filters and masks are disposed.
 		 */
 		public function dispose():void
 		{
