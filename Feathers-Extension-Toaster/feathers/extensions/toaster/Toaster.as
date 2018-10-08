@@ -235,7 +235,7 @@ package feathers.extensions.toaster
 		{
 			toasters.splice( toasters.indexOf( textToaster ), 1 );
 			//_this.stage.removeChild(textToaster);
-			PopUpManager.removePopUp( textToaster );
+			PopUpManager.removePopUp( textToaster, true );
 			textToaster.dispatchEvent( new Event ( Event.COMPLETE ) );
 			if( taskManager && toasters.length != 0 )
 			{
