@@ -6,8 +6,8 @@ accordance with the terms of the accompanying license agreement.
 */
 package feathers.extensions.toaster
 {
-	import feathers.controls.TextCallout;
-	import starling.display.DisplayObject;
+	import feathers.extensions.borderContainer.BorderContainer;
+	import feathers.layout.VerticalLayout;
 	import starling.events.Event;
 	
 	/**
@@ -16,11 +16,16 @@ package feathers.extensions.toaster
 	 * @see http://pol2095.free.fr/Starling-Feathers-Extensions/
 	 * @see feathers.extensions.toaster.Toaster
 	 */
-	public class TextToaster extends TextCallout
+	public class DefaultToaster extends BorderContainer
 	{
-		public function TextToaster(_this:Toaster)
+		public function DefaultToaster()
         {
 			super();
+			this.layout = new VerticalLayout();
+        }
+		
+		public function init(_this:Toaster):void
+        {
 			this._this = _this;
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         }
@@ -32,36 +37,36 @@ package feathers.extensions.toaster
 			_this.onResize();
         }
 		
-		private var _labelOffsetX:Number = 8;
+		private var _offsetX:Number = 8;
 		/**
 		 * The minimum space, in pixels, between the toaster's left and right edge and the toaster's content.
 		 *
 		 * @default 8
 		 */
-		public function get labelOffsetX():Number
+		public function get offsetX():Number
 		{
-			return this._labelOffsetX;
+			return this._offsetX;
 		}
-		public function set labelOffsetX(value:Number):void
+		public function set offsetX(value:Number):void
 		{
-			this._labelOffsetX = value;
-			this.paddingLeft = this.paddingRight = labelOffsetX;
+			this._offsetX = value;
+			(this.layout as VerticalLayout).paddingLeft = (this.layout as VerticalLayout).paddingRight = offsetX;
 		}
 		
-		private var _labelOffsetY:Number = 8;
+		private var _offsetY:Number = 8;
 		/**
 		 * The minimum space, in pixels, between the toaster's top and bottom edge and the toaster's content.
 		 *
 		 * @default 8
 		 */
-		public function get labelOffsetY():Number
+		public function get offsetY():Number
 		{
-			return this._labelOffsetY;
+			return this._offsetY;
 		}
-		public function set labelOffsetY(value:Number):void
+		public function set offsetY(value:Number):void
 		{
-			this._labelOffsetY = value;
-			this.paddingTop = this.paddingBottom = labelOffsetY;
+			this._offsetY = value;
+			(this.layout as VerticalLayout).paddingTop = (this.layout as VerticalLayout).paddingBottom = offsetY;
 		}
 		
 		private var _isCentered:Boolean;
