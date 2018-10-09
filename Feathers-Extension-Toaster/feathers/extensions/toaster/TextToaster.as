@@ -105,6 +105,11 @@ package feathers.extensions.toaster
 		/**
 		 * @private
 		 */
+		public var delayToDisplay:Number;
+		
+		/**
+		 * @private
+		 */
 		public var delay:Number;
 	}
 }

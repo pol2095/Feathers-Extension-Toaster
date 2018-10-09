@@ -28,9 +28,25 @@ package feathers.extensions.toaster
 		 */
 		public var isCentered:Boolean;
 		
+		
+		private var _delayToDisplay:Number = 1.0;
+		/**
+		 * The delay to display totally the toaster message in seconds (fade effect). It's the same delay to remove the toaster.
+		 *
+		 * @default 1.0
+		 */
+		public function get delayToDisplay():Number
+		{
+			return this._delayToDisplay;
+		}
+		public function set delayToDisplay(value:Number):void
+		{
+			this._delayToDisplay = value;
+		}
+		
 		private var _delay:Number = 1.0;
 		/**
-		 * The duration to display the toaster message in seconds.
+		 * The duration to display totally the toaster message in seconds (without fade effect).
 		 *
 		 * @default 1.0
 		 */
@@ -155,6 +171,7 @@ package feathers.extensions.toaster
 			textToaster.labelOffsetX = labelOffsetX;
 			textToaster.labelOffsetY = labelOffsetY;
 			//textToaster.includeInLayout = false;
+			textToaster.delayToDisplay = delayToDisplay;
 			textToaster.delay = delay;
 			textToaster.isCentered = isCentered;
 			textToaster.anchorBottom = anchorBottom;
@@ -166,9 +183,9 @@ package feathers.extensions.toaster
 			return textToaster;
 		}
 		
-		private function callout_show(textToaster:TextToaster, delay:Number, start : Number = 0.0, finish : Number = 1.0, transitions : String = Transitions.EASE_OUT) : void
+		private function callout_show(textToaster:TextToaster, delayToDisplay:Number, delay:Number, start : Number = 0.0, finish : Number = 1.0, transitions : String = Transitions.EASE_OUT) : void
 		{
-			Starling.juggler.tween (textToaster, delay,
+			Starling.juggler.tween (textToaster, delayToDisplay,
 			{
 				alpha : finish,
 				transition : transitions,
@@ -178,7 +195,7 @@ package feathers.extensions.toaster
 				},
 				onComplete : function () : void
 				{			 
-					if(finish == 1.0) setTimeout(callout_timeout, 1000, textToaster, delay);
+					if(finish == 1.0) setTimeout(callout_timeout, delay * 1000, textToaster, delayToDisplay, delay);
 					if(finish == 0.0) callout_close( textToaster );
 				}
 			});
@@ -212,23 +229,23 @@ package feathers.extensions.toaster
 			//callout_show(textToaster, delay, 0.0, 1.0, Transitions.EASE_OUT);
 			if( ! taskManager )
 			{
-				launch( textToaster, delay );
+				launch( textToaster, delayToDisplay, delay );
 			}
 			else if( toasters.length == 1 )
 			{
-				launch( textToaster, delay );
+				launch( textToaster, delayToDisplay, delay );
 			}
 			return textToaster;
 		}
 		
-		private function launch( textToaster:TextToaster, delay:Number ):void
+		private function launch( textToaster:TextToaster, delayToDisplay:Number, delay:Number ):void
 		{
-			callout_show(textToaster, delay, 0.0, 1.0, Transitions.EASE_OUT);
+			callout_show(textToaster, delayToDisplay, delay, 0.0, 1.0, Transitions.EASE_OUT);
 		}
 		
 		private function callout_timeout():void
 		{
-			callout_show(arguments[0], arguments[1], 1.0, 0.0, Transitions.EASE_IN);
+			callout_show(arguments[0], arguments[1], arguments[2], 1.0, 0.0, Transitions.EASE_IN);
 		}
 		
 		private function callout_close( textToaster:TextToaster ):void
@@ -240,7 +257,7 @@ package feathers.extensions.toaster
 			if( taskManager && toasters.length != 0 )
 			{
 				var textToaster:TextToaster = toasters[0];
-				launch( textToaster, textToaster.delay );
+				launch( textToaster, textToaster.delayToDisplay, textToaster.delay );
 			}
 		}
 		
