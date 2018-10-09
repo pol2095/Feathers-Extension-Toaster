@@ -126,6 +126,7 @@ package feathers.extensions.toaster
 		public function set toasterRenderer(value:Object):void
 		{
 			if( ! (value is Class) ) value = getDefinitionByName(value as String);
+			if( ToasterRenderer == value ) return;
 			ToasterRenderer = value as Class;
 		}
 		

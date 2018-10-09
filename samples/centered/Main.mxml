@@ -12,21 +12,21 @@
 	<fx:Script>
 		<![CDATA[			
 			import feathers.extensions.toaster.Toaster;
-			import feathers.extensions.toaster.TextToaster;
+			import feathers.extensions.toaster.CustomToaster;
 			
 			private var toaster:Toaster = new Toaster(this);
 			
 			private function button_triggeredHandler( event:Event ):void
 			{
+				//toaster.toasterRenderer = components.CustomToaster;
 				//toaster.delay = 2;
 				toaster.isCentered = true;
-				var textToaster:TextToaster = toaster.open( "some text" );
-				toaster.moveTo( textToaster, 0, 150);
+				var customToaster:CustomToaster = toaster.open( "some text" );
+				toaster.moveTo( customToaster, 0, 150);
 				
 				/*var image:Image = new Image( texture );
 				image.scale9Grid = new Rectangle( 20, 20, fileTexture.width - 20 * 2, fileTexture.height - 20 * 2 );
-				textToaster.backgroundSkin = image;
-				textToaster.fontStyles = new starling.text.TextFormat( "Helvetica", 20, 0x3c3c3c );*/
+				customToaster.backgroundSkin = image;*/
 			}
 		]]>
 	</fx:Script>
