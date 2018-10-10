@@ -103,6 +103,13 @@ package feathers.extensions.toaster
 			return root.stage;
 		}
 		
+		private var _starling:Starling;
+		private function get starling():Starling
+		{
+			if( ! _starling ) _starling = stage.starling;
+			return _starling;
+		}
+		
 		private var _anchorBottom:Number = NaN;
 		/**
 		 * The distance between the toaster an the bottom of the stage.
@@ -214,6 +221,7 @@ package feathers.extensions.toaster
 			 
 			//stage.addChild(toasterRenderer);
 			//toasterRenderer.validate();
+			starling.makeCurrent();
 			PopUpManager.addPopUp( toasterRenderer as DisplayObject, false, false );
 			return toasterRenderer;
 		}
@@ -287,6 +295,7 @@ package feathers.extensions.toaster
 		{
 			toasters.splice( toasters.indexOf( toasterRenderer ), 1 );
 			//stage.removeChild(toasterRenderer);
+			starling.makeCurrent();
 			PopUpManager.removePopUp( toasterRenderer as DisplayObject, true );
 			toasterRenderer.dispatchEvent( new Event ( Event.COMPLETE ) );
 			if( taskManager && toasters.length != 0 )
