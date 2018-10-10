@@ -11,6 +11,7 @@ package feathers.extensions.toaster
 	import flash.utils.setTimeout;
 	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.display.Stage;
 	import starling.events.Event;
 	import starling.animation.Transitions;
 	import starling.display.DisplayObject;
@@ -95,7 +96,7 @@ package feathers.extensions.toaster
 		 */
 		protected var toasters:Vector.<Object>;
 		
-		private var _this:Object;
+		//private var _this:Object;
 		
 		private var _anchorBottom:Number = NaN;
 		/**
@@ -146,10 +147,12 @@ package feathers.extensions.toaster
 		 */
 		public var backgroundSkin:Image;
 		
-		public function Toaster(_this:Object)
+		private var stage:Stage;
+		
+		public function Toaster() //_this:Object)
         {
 			//this.includeInLayout = false;
-			this._this = _this;
+			//this._this = _this;
 			//this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 		
@@ -164,16 +167,17 @@ package feathers.extensions.toaster
 		 */
 		public function onResize(event:Event = null):void
         {
+			if( ! stage ) return;
 			for each(var toasterRenderer:Object in toasters)
 			{
 				if( ! toasterRenderer.isCreated ) return;
 				var _y:Number;
 				if(toasterRenderer.isCentered)
 				{
-					var _x:Number = (_this.stage.stageWidth - toasterRenderer.width) / 2;
+					var _x:Number = (stage.stageWidth - toasterRenderer.width) / 2;
 					if( ! isNaN( toasterRenderer.anchorBottom ) )
 					{
-						_y = _this.stage.stageHeight - toasterRenderer.anchorBottom - toasterRenderer.height;
+						_y = stage.stageHeight - toasterRenderer.anchorBottom - toasterRenderer.height;
 					}
 					else
 					{
@@ -183,7 +187,7 @@ package feathers.extensions.toaster
 				}
 				else if( ! isNaN( toasterRenderer.anchorBottom ) )
 				{
-					_y = _this.stage.stageHeight - toasterRenderer.anchorBottom - toasterRenderer.height;
+					_y = stage.stageHeight - toasterRenderer.anchorBottom - toasterRenderer.height;
 					toasterRenderer.move(toasterRenderer.x, _y);
 				}
 			}
@@ -252,7 +256,7 @@ package feathers.extensions.toaster
 		 */
 		public function open():Object
 		{
-			if( ! _this.stage.hasEventListener(Event.RESIZE, onResize) ) _this.stage.addEventListener(Event.RESIZE, onResize);
+			//if( ! _this.stage.hasEventListener(Event.RESIZE, onResize) ) _this.stage.addEventListener(Event.RESIZE, onResize);
 			var toasterRenderer:Object = createCallout();
 			//callout_show(toasterRenderer, delay, 0.0, 1.0, Transitions.EASE_OUT);
 			if( ! taskManager )
@@ -298,13 +302,25 @@ package feathers.extensions.toaster
 		}
 		
 		/**
+		 * @private
+		 */
+		public function addedToStageHandler(stage:Stage):void
+		{
+			this.stage = stage;
+			if( ! stage.hasEventListener(Event.RESIZE, onResize) )
+			{
+				stage.addEventListener(Event.RESIZE, onResize);
+			}
+		}
+		
+		/**
 		 * Disposes all resources of the display object. GPU buffers are released, event listeners are removed, filters and masks are disposed.
 		 */
 		public function dispose():void
 		{
-			if(_this.stage)
+			if(stage)
 			{
-				_this.stage.removeEventListener(Event.RESIZE, onResize);
+				stage.removeEventListener(Event.RESIZE, onResize);
 				//for each(var toasterRenderer:Object in toasters) _this.stage.removeChild(toasterRenderer);
 			}
 			//toasters = null;

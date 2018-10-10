@@ -22,13 +22,23 @@ package feathers.extensions.toaster
         {
 			super();
 			this.layout = new VerticalLayout();
+			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
         }
 		
+		/**
+		 * @private
+		 */
 		public function init(_this:Toaster):void
         {
 			this._this = _this;
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         }
+		
+		private function addedToStageHandler(event:Event):void
+		{
+			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			_this.addedToStageHandler( stage );
+		}
 		
 		private function onEnterFrame(event:Event):void
 		{
