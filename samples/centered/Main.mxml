@@ -14,7 +14,7 @@
 			import feathers.extensions.toaster.Toaster;
 			import feathers.extensions.toaster.CustomToaster;
 			
-			private var toaster:Toaster = new Toaster();
+			private var toaster:Toaster = new Toaster(this);
 			
 			private function button_triggeredHandler( event:Event ):void
 			{

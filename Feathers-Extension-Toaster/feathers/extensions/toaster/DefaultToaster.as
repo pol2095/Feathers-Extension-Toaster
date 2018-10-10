@@ -22,29 +22,22 @@ package feathers.extensions.toaster
         {
 			super();
 			this.layout = new VerticalLayout();
-			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
         }
 		
 		/**
 		 * @private
 		 */
-		public function init(_this:Toaster):void
+		public function init(_root:Toaster):void
         {
-			this._this = _this;
+			this._root = _root;
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         }
-		
-		private function addedToStageHandler(event:Event):void
-		{
-			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-			_this.addedToStageHandler( stage );
-		}
 		
 		private function onEnterFrame(event:Event):void
 		{
 			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			this.validate();
-			_this.onResize();
+			_root.onResize();
         }
 		
 		private var _offsetX:Number = 8;
@@ -93,13 +86,13 @@ package feathers.extensions.toaster
 		{
 			if( this._isCentered == value ) return;
 			this._isCentered = value;
-			_this.onResize();
+			_root.onResize();
 		}
 		
 		/**
 		 * @private
 		 */
-		public var _this:Toaster;
+		public var _root:Toaster;
 		
 		private var _anchorBottom:Number = NaN;
 		/**
@@ -114,7 +107,7 @@ package feathers.extensions.toaster
 		public function set anchorBottom(value:Number):void
 		{
 			this._anchorBottom = value;
-			_this.onResize();
+			_root.onResize();
 		}
 		
 		/**

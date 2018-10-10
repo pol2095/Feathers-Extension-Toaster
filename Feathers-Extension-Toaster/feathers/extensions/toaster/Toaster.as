@@ -96,7 +96,12 @@ package feathers.extensions.toaster
 		 */
 		protected var toasters:Vector.<Object>;
 		
-		//private var _this:Object;
+		private var root:Object;
+				
+		private function get stage():Stage
+		{
+			return root.stage;
+		}
 		
 		private var _anchorBottom:Number = NaN;
 		/**
@@ -147,19 +152,17 @@ package feathers.extensions.toaster
 		 */
 		public var backgroundSkin:Image;
 		
-		private var stage:Stage;
-		
-		public function Toaster() //_this:Object)
+		public function Toaster(root:Object)
         {
 			//this.includeInLayout = false;
-			//this._this = _this;
+			this.root = root;
 			//this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         }
 		
 		/*private function onAddedToStage(event:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			_this.stage.addEventListener(Event.RESIZE, onResize);
+			root.stage.addEventListener(Event.RESIZE, onResize);
         }*/
 		
 		/**
@@ -209,7 +212,7 @@ package feathers.extensions.toaster
 			toasterRenderer.isCentered = isCentered;
 			toasterRenderer.anchorBottom = anchorBottom;
 			 
-			//_this.stage.addChild(toasterRenderer);
+			//stage.addChild(toasterRenderer);
 			//toasterRenderer.validate();
 			PopUpManager.addPopUp( toasterRenderer as DisplayObject, false, false );
 			return toasterRenderer;
@@ -256,7 +259,7 @@ package feathers.extensions.toaster
 		 */
 		public function open():Object
 		{
-			//if( ! _this.stage.hasEventListener(Event.RESIZE, onResize) ) _this.stage.addEventListener(Event.RESIZE, onResize);
+			if( ! stage.hasEventListener(Event.RESIZE, onResize) ) stage.addEventListener(Event.RESIZE, onResize);
 			var toasterRenderer:Object = createCallout();
 			//callout_show(toasterRenderer, delay, 0.0, 1.0, Transitions.EASE_OUT);
 			if( ! taskManager )
@@ -283,7 +286,7 @@ package feathers.extensions.toaster
 		private function callout_close( toasterRenderer:Object ):void
 		{
 			toasters.splice( toasters.indexOf( toasterRenderer ), 1 );
-			//_this.stage.removeChild(toasterRenderer);
+			//stage.removeChild(toasterRenderer);
 			PopUpManager.removePopUp( toasterRenderer as DisplayObject, true );
 			toasterRenderer.dispatchEvent( new Event ( Event.COMPLETE ) );
 			if( taskManager && toasters.length != 0 )
@@ -302,18 +305,6 @@ package feathers.extensions.toaster
 		}
 		
 		/**
-		 * @private
-		 */
-		public function addedToStageHandler(stage:Stage):void
-		{
-			this.stage = stage;
-			if( ! stage.hasEventListener(Event.RESIZE, onResize) )
-			{
-				stage.addEventListener(Event.RESIZE, onResize);
-			}
-		}
-		
-		/**
 		 * Disposes all resources of the display object. GPU buffers are released, event listeners are removed, filters and masks are disposed.
 		 */
 		public function dispose():void
@@ -321,7 +312,7 @@ package feathers.extensions.toaster
 			if(stage)
 			{
 				stage.removeEventListener(Event.RESIZE, onResize);
-				//for each(var toasterRenderer:Object in toasters) _this.stage.removeChild(toasterRenderer);
+				//for each(var toasterRenderer:Object in toasters) stage.removeChild(toasterRenderer);
 			}
 			//toasters = null;
 		}
