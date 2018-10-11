@@ -6,7 +6,7 @@ A Toaster provides simple feedback about an operation in a small popup.
 
 ## Quick Links
 
-* [Website](http://pol2095.free.fr/Starling-Feathers-Extensions/)
+* [Website](http://pol2095.free.fr/Feathers-Extension-Toaster/)
 * [API Reference](http://pol2095.free.fr/Starling-Feathers-Extensions/docs/feathers/extensions/toaster/package-detail.html)
 * [Discussion Forum](http://forum.starling-framework.org/forum/feathers)
 * [Github Project](https://github.com/pol2095/Feathers-Extension-Toaster)
