@@ -20,8 +20,8 @@
 			{
 				//toaster.toasterRenderer = components.CustomToaster;
 				//toaster.delay = 2;
-				toaster.isCentered = true;
 				var customToaster:CustomToaster = toaster.open( "some text" );
+				//customToaster.isCentered = true;
 				toaster.moveTo( customToaster, 0, 150);
 				
 				/*var image:Image = new Image( texture );
