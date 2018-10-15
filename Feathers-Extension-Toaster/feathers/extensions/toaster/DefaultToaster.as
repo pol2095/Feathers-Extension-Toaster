@@ -9,6 +9,7 @@ package feathers.extensions.toaster
 	import feathers.extensions.borderContainer.BorderContainer;
 	import feathers.layout.VerticalLayout;
 	import starling.events.Event;
+	import starling.events.ResizeEvent;
 	
 	/**
 	 * A TextToaster is a toaster add in <code>Toaster</code> control.
@@ -22,14 +23,6 @@ package feathers.extensions.toaster
         {
 			super();
 			this.layout = new VerticalLayout();
-        }
-		
-		/**
-		 * @private
-		 */
-		public function init(_root:Toaster):void
-        {
-			this._root = _root;
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         }
 		
@@ -37,7 +30,7 @@ package feathers.extensions.toaster
 		{
 			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			this.validate();
-			_root.onResize();
+			if( stage ) stage.dispatchEvent( new ResizeEvent( Event.RESIZE, stage.stageWidth, stage.stageHeight ) );
         }
 		
 		private var _offsetX:Number = 8;
@@ -86,13 +79,8 @@ package feathers.extensions.toaster
 		{
 			if( this._isCentered == value ) return;
 			this._isCentered = value;
-			_root.onResize();
+			if( stage ) stage.dispatchEvent( new ResizeEvent( Event.RESIZE, stage.stageWidth, stage.stageHeight ) );
 		}
-		
-		/**
-		 * @private
-		 */
-		public var _root:Toaster;
 		
 		private var _anchorBottom:Number = NaN;
 		/**
@@ -107,7 +95,7 @@ package feathers.extensions.toaster
 		public function set anchorBottom(value:Number):void
 		{
 			this._anchorBottom = value;
-			_root.onResize();
+			if( stage ) stage.dispatchEvent( new ResizeEvent( Event.RESIZE, stage.stageWidth, stage.stageHeight ) );
 		}
 		
 		/**

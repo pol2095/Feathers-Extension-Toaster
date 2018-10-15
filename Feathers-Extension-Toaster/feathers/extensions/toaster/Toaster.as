@@ -172,10 +172,7 @@ package feathers.extensions.toaster
 			root.stage.addEventListener(Event.RESIZE, onResize);
         }*/
 		
-		/**
-		 * @private
-		 */
-		public function onResize(event:Event = null):void
+		private function onResize(event:Event):void
         {
 			if( ! stage ) return;
 			for each(var toasterRenderer:Object in toasters)
@@ -206,7 +203,6 @@ package feathers.extensions.toaster
 		private function createCallout():Object
 		{
 			var toasterRenderer:Object = new ToasterRenderer();
-			toasterRenderer.init(this);
 			if(!toasters) toasters = new <Object>[];
 			toasters.push( toasterRenderer );
 			toasterRenderer.alpha = 0.0;
