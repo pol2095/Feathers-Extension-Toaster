@@ -203,6 +203,7 @@ package feathers.extensions.toaster
 		private function createCallout():Object
 		{
 			var toasterRenderer:Object = new ToasterRenderer();
+			toasterRenderer.addEventListener(Event.RESIZE, onResize);
 			if(!toasters) toasters = new <Object>[];
 			toasters.push( toasterRenderer );
 			toasterRenderer.alpha = 0.0;
@@ -291,6 +292,7 @@ package feathers.extensions.toaster
 		{
 			toasters.splice( toasters.indexOf( toasterRenderer ), 1 );
 			//stage.removeChild(toasterRenderer);
+			toasterRenderer.removeEventListener(Event.RESIZE, onResize);
 			starling.makeCurrent();
 			PopUpManager.removePopUp( toasterRenderer as DisplayObject, true );
 			toasterRenderer.dispatchEvent( new Event ( Event.COMPLETE ) );
